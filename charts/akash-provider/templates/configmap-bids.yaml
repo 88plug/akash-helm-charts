@@ -1,0 +1,179 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "provider.fullname" . }}-bids
+  namespace: {{ .Release.Namespace }}
+data:
+  bid_on_storage.sh: |
+    #!/bin/bash
+    # read the JSON in `stdin` into $script_input
+    #read -r script_input   
+    #set -euo pipefail
+    # iterate over all the groups and calculate total quantity of each resource
+
+    set -euo pipefail
+    # min amount of storage, otherwise skip bidding
+    #STORAGE_MINIMUM=274877906943
+    # cost per byte of storage
+    #STORAGE_SCALE=0.1 
+    # cost per whole CPU
+    #CPU_SCALE=2.0
+    # cost per byte of RAM
+    #MEMORY_SCALE=0.345
+    data_in=$(jq .)
+    #    echo $data_in
+    memory_total=$(echo "$data_in" | jq 'map(.memory * .count) | add')
+    storage_total=$(echo "$data_in" | jq 'map(.storage * .count) | add')
+    cpu_total=$(echo "$data_in" | jq 'map(.cpu * .count) | add')
+    #cpu_total=$(bc -l <<<"(${cpu_total}/1000)")
+
+    ursa_major_cpu_max=4000
+    #4cpu
+    ursa_major_memory_max=8589934592
+    #4gi
+    ursa_major_storage_max=137438953472
+    #128gb
+ 
+    #storage_total=$(echo "$data_in" | jq 'map(.storage * .count) | add')
+    # check that the minimum amount of storage is met
+
+    if [[ $cpu_total -gt $ursa_major_cpu_max ]]; then
+    echo '0' 
+    fi
+    if [[ $memory_total -gt $ursa_major_memory_max ]]; then
+    echo 0
+    fi
+    if [[ $storage_total -gt $ursa_major_storage_max ]]; then
+    echo 0
+    fi
+
+
+    # bid
+    #    echo "($memory_total * $MEMORY_SCALE) + ($storage_total * $STORAGE_SCALE) + ($cpu_total * $CPU_SCALE)" | bc
+
+    #usd_per_akt="1.41"
+    #DEFAULT_API_URL="https://api.coingecko.com/api/v3/simple/price?ids=akash-network&vs_currencies=usd"
+    #if [ -z "$API_URL" ]; then
+    #  API_URL=$DEFAULT_API_URL
+    #fi
+
+    #API_RESPONSE=$(curl -s "$API_URL")
+    #curl_exit_status=$?
+    #if [ $curl_exit_status != 0 ]; then
+    #  exit $curl_exit_status
+    #fi
+    #usd_per_akt=$(jq '."akash-network"."usd"' <<<"$API_RESPONSE")#
+
+    #if [ 1 -eq "$(bc <<< "${usd_per_akt}==0")" ]; then
+    #  exit 1
+    #fi
+    #sleep 5
+    usd_per_akt=$(curl -s -X GET "https://api.coingecko.com/api/v3/coins/akash-network/tickers" -H  "accept: application/json" | jq '.tickers[] | select(.market.name == "Osmosis").converted_last.usd' | head -n1)
+    #if [ 1 -eq "$(bc <<< "${usd_per_akt}==0")" ]; then
+    #usd_per_akt=1.0
+    #fi
+
+    #sleep 10
+    #block_time="6.174"
+    #month="30.437"
+    #TARGET="2.50" 
+    #USD per core
+    #cpu_total=10000
+    #usd_per_akt=1.27
+
+    #cpu_total=$(bc -l <<<"(${cpu_total}/1000)")
+    #total_cost_usd_target=$(bc -l <<<"((${cpu_total}/1000) * ${TARGET})")
+   
+    #echo $total_cost_usd_target
+    #total_cost_akt_target=$(bc -l <<<"(${total_cost_usd_target}/$usd_per_akt)")
+    #echo $total_cost_akt_target
+    #total_cost_uakt_target=$(bc -l <<<"(${total_cost_akt_target}*1000000)")
+    #echo $total_cost_uakt_target
+    #cost_per_block=$(bc -l <<<"(${total_cost_uakt_target}/419825.072886297)")
+    #echo $cost_per_block
+    #total_cost_uakt=$(echo "$cost_per_block" | jq 'def ceil: if . | floor == . then . else . + 1.0 | floor end; .|ceil')
+    # return the price in uAKT
+    #echo $total_cost_uakt
+
+    ##qalc=$(qalc -t "((x*$month*24*60*60)/6.174)=$TARGET" | awk '{print $3}')
+    #cost_per_block=$(bc -l <<<"(${qalc}*1000000*$cpu_total)")
+    #echo $cost_per_block
+
+    #total_cost_uakt=$(echo "$cost_per_block" | jq 'def ceil: if . | floor == . then . else . + 1.0 | floor end; .|ceil')
+
+    # return the price in uAKT
+    #echo $total_cost_uakt
+    block_time="6.174"
+    month="30.437"
+    TARGET="3.00"
+    #Target price is delayed on AKashlytics, so set 50 cents less right now -  
+    #USD per core
+    #cpu_total=10000
+    #usd_per_akt=1.27
+
+    cpu_total=$(bc -l <<<"(${cpu_total}/1000)")
+    total_cost_usd_target=$(bc -l <<<"(${cpu_total} * ${TARGET})")
+    total_cost_akt_target=$(bc -l <<<"(${total_cost_usd_target}/$usd_per_akt)")
+    total_cost_uakt_target=$(bc -l <<<"(${total_cost_akt_target}*1000000)")
+    cost_per_block=$(bc -l <<<"(${total_cost_uakt_target}/425940.524781341)")
+    total_cost_uakt=$(echo "$cost_per_block" | jq 'def ceil: if . | floor == . then . else . - 1.0 | floor end; .|ceil')
+    echo $total_cost_uakt
+    #cpu_total=$(bc -l <<<"(${cpu_total}/1000)")
+    #total_cost_usd_target=$(bc -l <<<"(${cpu_total} * ${TARGET})")
+    #qalc=$(qalc -t "((x*$month*24*60*60)/$block_time)=$total_cost_usd_target" | awk '{print $3}')
+    #cost_per_block=$(bc -l <<<"(${qalc}*1000000)")
+    #total_cost_uakt=$(echo "$cost_per_block" | jq 'def ceil: if . | floor == . then . else . + 1.0 | floor end; .|ceil')
+    #echo $total_cost_uakt
+
+
+
+
+    #Now we have monthly total UAKT for the deployment, divibe by total blocks in a month to get uakt/block.
+    #60*60 = 3600 seconds in an hour
+    #3600 * 24 = 86400 seconds in a day
+    #365 / 12 = 30.42 avergae days in a month
+    #30.42 * 86400 = 2628288 seconds in a month
+    #Get total blocks per month
+    #Now divide 2628288 by total blocks per sec = 6.174 = 398225.454545455
+    #divide total uakt by results of last
+
+    # Round upwards to get an integer
+
+    #    total_cost_block_uakt=$(bc -l <<<"${total_cost_uakt_target}/398225")
+    #    total_cost_block_uakt=$(bc -l <<<"(${total_cost_uakt_target}/398225.454545455)")
+
+    #total_cost_uakt_target1=$(bc -l <<<"(${total_cost_uakt_target}/425702)")
+    #total_cost_uakt_target0=$(bc -l <<<"(${total_cost_uakt_target}/41788.14382896)")
+    #qalc=$(qalc -t "((86400*(x/1000000))/6.174/24)=$TARGET" | awk '{print $3}')
+     
+    #uakt? 
+
+    #total_cost_uakt=$(echo "$qalc" | jq 'def ceil: if . | floor == . then . else . + 1.0 | floor end; .|ceil')
+    #total_cost_uakt_target1=$(bc -l <<<"(${total_cost_uakt_target}/425702)")
+    #qalc=$(qalc -t "((86400*(x/1000000))/6.174)=$total_cost_akt_target" | awk '{print $3}')
+    #qalc=$(bc -l <<<"(${qalc}/24)")
+
+    #uakt?
+
+    #total_cost_uakt=$(echo "$qalc" | jq 'def ceil: if . | floor == . then . else . + 1.0 | floor end; .|ceil')
+
+    # return the price in uAKT
+    #echo $total_cost_uakt
+
+    # return the price in uAKT
+    #echo $total_cost_uakt
+
+    #total_cost_uakt=$(qalc -t "86400*(x/1000000)/6=${total_cost_usd_target}" | awk '{print $3}')
+    #echo $total_cost_uakt
+
+
+    # can potentially solve for X here? uakt = 3.28125 x 10
+    # validate the current USD price per AKT is not zero
+    #if [ 1 -eq "$(bc <<< "${total_cost_uakt}==0")" ]; then
+    #exit 1
+    #else
+    #echo "$total_cost_uakt"
+    #fi
+
+
+    #qalc -t "x*0.00000019=0.0005" | awk '{print $3}'

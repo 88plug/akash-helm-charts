@@ -12,16 +12,18 @@ data:
     ##
     # Import key
     ##
-    cat "$AKASH_BOOT_KEYS/key-pass.txt" | { cat ; echo ; } | /bin/akash --home="$AKASH_HOME" keys import --keyring-backend="$AKASH_KEYRING_BACKEND"  "$AKASH_FROM" "$AKASH_BOOT_KEYS/key.txt"
-
+    cat "$AKASH_BOOT_KEYS/key-pass.txt" | { cat ; echo ; } | /bin/akash --home="$AKASH_HOME" keys import --keyring-backend="$AKASH_KEYRING_BACKEND" "$AKASH_FROM" "$AKASH_BOOT_KEYS/key.txt"
+    #cat "$AKASH_BOOT_KEYS/key-pass.txt" | { cat ; echo ; } | /bin/akash --home="$AKASH_HOME" keys import --keyring-backend="$AKASH_KEYRING_BACKEND" "$AKASH_FROM" "$AKASH_BOOT_KEYS/akash1zlsep362zz46qlwzttm06t8lv9qtg8gtaya97u.pem"
+    TYPE="{{ .Values.type }}"
+    echo "$TYPE in use"
     # Check the Akash Node is working
     apt update || exit 1
-    apt -yqq install curl jq netcat || exit 1
+    apt -yqq install curl bc jq netcat qalc wget || exit 1
     solo_ip=$(echo $AKASH_NODE | cut -d":" -f2 | cut -d "/" -f3) ; port=$(echo $AKASH_NODE | cut -d":" -f3-)
     if [[ $AKASH_NODE != "http://akash-node-1:26657" ]]; then
     nc -z -v -w5 $solo_ip $port || exit 1
     fi
-    until [[ $(curl -s $AKASH_NODE/status | jq -r .result.sync_info.catching_up) == "false" ]]; do sleep 15; echo "Akash node not ready. Retrying";  done
+    while [[ $(curl -s $AKASH_NODE/status | jq -r .result.sync_info.catching_up) == "true" ]]; do sleep 15; echo "Akash node not ready. Retrying";  done
     ##
     # Create Provider
     ##
@@ -33,7 +35,14 @@ data:
         value: {{ $val.value }}
     {{- end }}
     EOT
+
     POPTS="--from $AKASH_FROM --home=$AKASH_HOME --keyring-backend=$AKASH_KEYRING_BACKEND --node=$AKASH_NODE --chain-id=$AKASH_CHAIN_ID --broadcast-mode=block -y"
+    POPTSS="--from $AKASH_FROM --home=$AKASH_HOME --keyring-backend=$AKASH_KEYRING_BACKEND --node=$AKASH_NODE --chain-id=$AKASH_CHAIN_ID --broadcast-mode=block -y --gas=auto --gas-adjustment=1.15 --fees=40000uakt"
+    POPTSSS="--from $AKASH_FROM --home=$AKASH_HOME --keyring-backend=$AKASH_KEYRING_BACKEND --node=$AKASH_NODE --chain-id=$AKASH_CHAIN_ID --broadcast-mode=block --rie -y --gas=auto --gas-adjustment=1.15 --fees=40000uakt"
+    filename="/boot-keys/${AKASH_FROM}.pem"
+
+
+    if [[ $TYPE == "new" || $TYPE == "setup" ]]; then
 
     /bin/akash tx provider create provider.yaml $POPTS >deploy.log 2>&1 ; DEPLOY=$(cat deploy.log)
     if [[ $DEPLOY == *"already exists"* ]]; then
@@ -46,7 +55,11 @@ data:
     echo "No issue found...continue"
     fi
 
-    /bin/akash tx provider update provider.yaml $POPTS >deploy.log 2>&1 ; DEPLOY=$(cat deploy.log)
+    fi
+
+    if [[ $TYPE == "blockchain" || $TYPE == "setup" ]]; then
+
+    /bin/akash tx provider update provider.yaml $POPTSS >deploy.log 2>&1 ; DEPLOY=$(cat deploy.log)
     if [[ $DEPLOY == *"already exists"* ]]; then
     echo "Provider already exists, continue..."
     elif [[ $DEPLOY == *"insufficient fees"* ]]; then
@@ -61,9 +74,34 @@ data:
     echo "No issue found...continue"
     fi
 
-    /bin/akash tx cert create server provider.{{ .Values.domain }} $POPTS || exit 1
+    fi
+
+    #if [ -f /root/.akash/akash1zlsep362zz46qlwzttm06t8lv9qtg8gtaya97u.pem ]]; then
+    #If file is empty, then create cert, otherwise use what is there from local
+
+
+    if [[ -z $(grep '[^[:space:]]' $filename) ]] ; then
+    /bin/akash tx cert create server provider.{{ .Values.domain }} $POPTSSS || exit 1
+    cat /root/.akash/${AKASH_FROM}.pem
+    echo "Setup mode detected! Pausing for you to make sure this is local and saved in ./${AKASH_FROM}.pem"
+    sleep 300
+    exit 1
+    else
+    echo "Found local provider server cert"
+    cp /boot-keys/${AKASH_FROM}.pem /root/.akash/${AKASH_FROM}.pem
+    chmod 600 /root/.akash/${AKASH_FROM}.pem
+    cat /root/.akash/${AKASH_FROM}.pem
+    fi
+    
+
+
+    #[[ -s /root/.akash/akash1zlsep362zz46qlwzttm06t8lv9qtg8gtaya97u.pem ]] || /bin/akash tx cert create server provider.{{ .Values.domain }} $POPTSSS || exit 1
+
+    #cat /root/.akash/akash1zlsep362zz46qlwzttm06t8lv9qtg8gtaya97u.pem
+    #cat /root/.akash/akash1zlsep362zz46qlwzttm06t8lv9qtg8gtaya97u.pem > "$AKASH_BOOT_KEYS/akash1zlsep362zz46qlwzttm06t8lv9qtg8gtaya97u.pem"
     ##
     # Run daemon
     ##
-    /bin/akash --home="$AKASH_HOME" --node="$AKASH_NODE" --chain-id="$AKASH_CHAIN_ID" --keyring-backend="$AKASH_KEYRING_BACKEND" --from="$AKASH_FROM" provider run --cluster-k8s --deployment-network-policies-enabled false || exit 1
+    /bin/akash --home=/root/.akash/ --node="$AKASH_NODE" --chain-id="$AKASH_CHAIN_ID" --keyring-backend="$AKASH_KEYRING_BACKEND" --from="$AKASH_FROM" provider run --cluster-k8s --deployment-network-policies-enabled false || exit 1
+
     if $AKASH_DEBUG == "true"; then sleep 5000; fi

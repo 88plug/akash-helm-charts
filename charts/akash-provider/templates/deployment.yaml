@@ -92,14 +92,8 @@ spec:
             - name: AKASH_YES
               value: "true"
 
-            - name: AKASH_GAS_PRICES
-              value: "{{ .Values.gasprices }}"
-
-            - name: AKASH_GAS
-              value: "{{ .Values.gas }}"
-
-            - name: AKASH_GAS_ADJUSTMENT
-              value: "{{ .Values.gasadjustment }}"
+            - name: AKASH_FEES
+              value: "5123uakt"
 
             - name: AKASH_DEPLOYMENT_INGRESS_STATIC_HOSTS
               value: "true"
@@ -127,6 +121,9 @@ spec:
 
             - name: AKASH_BID_PRICE_STORAGE_SCALE
               value: "{{ .Values.bidpricestoragescale }}"
+
+            - name: AKASH_BID_PRICE_SCRIPT_PATH
+              value: "/bids/bid_on_storage.sh"
 
             - name: AKASH_OVERCOMMIT_PCT_CPU
               value: "0"
@@ -159,17 +156,23 @@ spec:
           volumeMounts:
             - name: boot
               mountPath: /boot
-              readOnly: true
+            - name: bids
+              mountPath: /bids
             - name: keys
               mountPath: /boot-keys
-              readOnly: true
       volumes:
         - name: boot
           configMap:
             name: {{ include "provider.fullname" . }}-boot
+        - name: bids
+          configMap:
+            defaultMode: 0777
+            name: {{ include "provider.fullname" . }}-bids
         - name: keys
           secret:
             secretName: {{ include "provider.fullname" . }}-keys
+            defaultMode: 0777
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
