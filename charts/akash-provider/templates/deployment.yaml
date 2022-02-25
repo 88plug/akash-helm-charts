@@ -89,6 +89,9 @@ spec:
             - name: AKASH_DEPLOYMENT_INGRESS_DOMAIN
               value: "ingress.{{ .Values.domain }}"
 
+            - name: DEPLOYMENT_NETWORK_POLICIES_ENABLED
+              value: "{{ .Values.deploymentnetworkpoliciesenabled }}"
+
             - name: AKASH_YES
               value: "true"
 
