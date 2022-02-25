@@ -1458,6 +1458,16 @@ entries:
   provider:
   - apiVersion: v2
     appVersion: 0.14.0
+    created: "2022-02-25T21:07:18.849058471Z"
+    description: A Helm chart for Kubernetes
+    digest: e989f3d2ce2b05c4158f468e8810c34023966e64d073f715376899bfaf89169d
+    name: provider
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/provider-0.137.0/provider-0.137.0.tgz
+    version: 0.137.0
+  - apiVersion: v2
+    appVersion: 0.14.0
     created: "2022-02-08T08:08:27.587373019Z"
     description: A Helm chart for Kubernetes
     digest: ca5eabd60900867b6f5541331afd569b92e1f368180329c8c92c454a69df9b96
