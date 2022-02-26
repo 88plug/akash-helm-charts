@@ -27,12 +27,12 @@ data:
     cpu_total=$(echo "$data_in" | jq 'map(.cpu * .count) | add')
     #cpu_total=$(bc -l <<<"(${cpu_total}/1000)")
 
-    ursa_major_cpu_max=4000
-    #4cpu
-    ursa_major_memory_max=8589934592
-    #4gi
-    ursa_major_storage_max=137438953472
-    #128gb
+    ursa_major_cpu_max=10000
+    #10cpu
+    ursa_major_memory_max=17179869184
+    #16gi
+    ursa_major_storage_max=1099511627776
+    #1Ti
  
     #storage_total=$(echo "$data_in" | jq 'map(.storage * .count) | add')
     # check that the minimum amount of storage is met
