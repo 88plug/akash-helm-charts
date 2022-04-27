@@ -3,6 +3,16 @@ entries:
   akash-ingress:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-04-27T16:50:13.246645775Z"
+    description: A Helm chart for Kubernetes
+    digest: ac7fbf7f734712d9c5364f347860a5c83f9a7703629f0ac1e72397eed56dde29
+    name: akash-ingress
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/akash-ingress-0.16.0/akash-ingress-0.16.0.tgz
+    version: 0.16.0
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-02-01T15:49:04.770979067Z"
     description: A Helm chart for Kubernetes
     digest: 2162170a8b122e08e9ad2e20c4110dfade9674777c76388355225cde9e4b6f10
@@ -142,6 +152,16 @@ entries:
     - https://github.com/ovrclk/helm-charts/releases/download/akash-ingress-0.1.0/akash-ingress-0.1.0.tgz
     version: 0.1.0
   akash-node:
+  - apiVersion: v2
+    appVersion: 0.14.1
+    created: "2022-04-27T16:50:13.404472221Z"
+    description: A Helm chart for Kubernetes
+    digest: e5977494d05494ef6e95c676631e79bafe02b304e714e99a42a6daa416edce95
+    name: akash-node
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/akash-node-0.125.0/akash-node-0.125.0.tgz
+    version: 0.125.0
   - apiVersion: v2
     appVersion: 0.14.1
     created: "2022-02-08T15:39:00.628220747Z"
@@ -1204,6 +1224,16 @@ entries:
     version: 0.2.0
   akash-rook:
   - apiVersion: v2
+    appVersion: 1.8.0
+    created: "2022-04-27T16:50:13.569754263Z"
+    description: A Helm chart for Kubernetes
+    digest: 9444c75a235ed5960e7b7ae8ebb724c565ab4dad239183687c874e3944014508
+    name: akash-rook
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/akash-rook-0.13.0/akash-rook-0.13.0.tgz
+    version: 0.13.0
+  - apiVersion: v2
     appVersion: 16.2.5
     created: "2021-11-11T18:16:29.840553721Z"
     dependencies:
@@ -1284,6 +1314,16 @@ entries:
     - https://github.com/ovrclk/helm-charts/releases/download/akash-rook-0.1.0/akash-rook-0.1.0.tgz
     version: 0.1.0
   hostname-operator:
+  - apiVersion: v2
+    appVersion: 0.14.0
+    created: "2022-04-27T16:50:13.715712355Z"
+    description: A Helm chart for Kubernetes
+    digest: 95aca35eac6bbb0a65f22ab8dbd5544715e4557b41e1f4255a1a67cd6b69a80f
+    name: hostname-operator
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/hostname-operator-0.12.0/hostname-operator-0.12.0.tgz
+    version: 0.12.0
   - apiVersion: v2
     appVersion: 0.14.0
     created: "2021-12-03T17:15:14.539725148Z"
@@ -1396,6 +1436,16 @@ entries:
     version: 0.1.0
   inventory-operator:
   - apiVersion: v2
+    appVersion: 0.1.2
+    created: "2022-04-27T16:50:13.908057949Z"
+    description: A Helm chart for the Akash Inventory Operator
+    digest: 4c81c61c101f6e2a36a9a6b3aadcae4839f92196de4785baf9cbf037a0597147
+    name: inventory-operator
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/inventory-operator-0.8.0/inventory-operator-0.8.0.tgz
+    version: 0.8.0
+  - apiVersion: v2
     appVersion: 0.1.0
     created: "2022-01-12T13:28:55.696878187Z"
     description: A Helm chart for the Akash Inventory Operator
@@ -1456,6 +1506,16 @@ entries:
     - https://github.com/ovrclk/helm-charts/releases/download/inventory-operator-0.1.0/inventory-operator-0.1.0.tgz
     version: 0.1.0
   provider:
+  - apiVersion: v2
+    appVersion: 0.14.0
+    created: "2022-04-27T16:50:14.249650277Z"
+    description: A Helm chart for Kubernetes
+    digest: 3405d079488686a18b01dd30977462844e59aef53ae1c746a0ddcbfb8b67c72a
+    name: provider
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/provider-0.143.0/provider-0.143.0.tgz
+    version: 0.143.0
   - apiVersion: v2
     appVersion: 0.14.0
     created: "2022-02-25T21:07:18.849058471Z"
