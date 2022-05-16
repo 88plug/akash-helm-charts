@@ -14,6 +14,18 @@ the latest versions of the packages. You can then run `helm search repo akash` t
 
 > If you want to use local charts from this github checkout, specify `./charts/akash-node` instead of `akash/akash-node` on `helm install`.
 
+## Charts
+
+| Chart              | Description                                                        |
+| ------------------ | ------------------------------------------------------------------ |
+| akash-e2e          | End to end tests to check if a provider is healthy (optional)      |
+| akash-ingress      | Installs the Akash Ingress resources (required)                    |
+| akash-node         | Installs an Akash RPC node (required)                              |
+| akash-provider     | Installs an Akash provider (required)                              |
+| akash-rook         | Sets up Rook-Ceph for persistent storage (optional)                |
+| akash-operator     | An operator to map Ingress objects to Akash deployments (required) |
+| inventory-operator | An operator to required for persistent storage (optional)          |
+
 ### Kubernetes (Dependency)
 
 [Kubernetes](https://kubernetes.io/) is an open-source system for automating deployment, scaling, and management of containerized applications. It is a hard dependency for running an Akash Provider.
@@ -92,12 +104,50 @@ Install the Ingress configuration for Akash.
 helm install akash-ingress akash/akash-ingress -n ingress-nginx --set domain=$DOMAIN
 ```
 
+#### Akash Rook (Optional - for Persistent Storage)
+
+Installs the Rook Ceph operator which sets up persistent storage.
+
+Before you install this chart you need to install the CRD's manually.
+
+```
+kubectl create -f https://raw.githubusercontent.com/ovrclk/helm-charts/main/charts/akash-rook/crds.yaml
+```
+
+Then need to set which nodes to use the disks on. We recommend you use all of the Kubernetes worker nodes.
+
+```
+helm install akash-rook akash/akash-rook -n akash-services --set nodes[0].name="mynodename",nodes[0].config=""
+```
+
+To set multiple nodes use a comma separated list and increase the decimal index from 0 upwards.
+
 #### Akash Inventory Operator (Optional - for Persistent Storage)
 
 Install an Inventory Operator that is used for persistent storage. Specifically it reports the free space available to the Akash Provider.
 
 ```
 helm install inventory-operator akash/inventory-operator -n akash-services
+```
+
+#### Akash E2E Tests (Optional)
+
+Install the Akash End to End Tests. This requires an Akash primary account with funds. Plus 4 additional accounts (can be empty) that are used for running the tests.
+
+Set the decryption password.
+
+`export KEY_SECRET=<password used when exporting key>`
+
+Copy and paste the exported key into `primarykey.pem`, `check0key.pem`, `check1key.pem`, `check2key.pem` and `check3key.pem` in the current directory.
+
+```
+helm install akash-e2e akash/akash-e2e -n akash-services \
+     --set keysecret="$(echo $KEY_SECRET | base64)" \
+     --set primarykey="$(cat ./primarykey.pem | base64)" \
+     --set check0key="$(cat ./check0key.pem | base64)" \
+     --set check1key="$(cat ./check1key.pem | base64)" \
+     --set check2key="$(cat ./check2key.pem | base64)" \
+     --set check3key="$(cat ./check3key.pem | base64)"
 ```
 
 ### Setup DNS
