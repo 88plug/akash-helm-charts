@@ -2,6 +2,20 @@ apiVersion: v1
 entries:
   akash-e2e:
   - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2022-11-28T19:28:29.06308463Z"
+    dependencies:
+    - name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.1.3
+    description: End to end tests to check if a provider is healthy (optional)
+    digest: f7d0578318ffb0b015e1706ceb020907fc87f66feb1120ff2f12d19795897493
+    name: akash-e2e
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/akash-e2e-0.19.0/akash-e2e-0.19.0.tgz
+    version: 0.19.0
+  - apiVersion: v2
     appVersion: 0.16.4
     created: "2022-09-22T04:29:37.902632726Z"
     dependencies:
@@ -31,6 +45,16 @@ entries:
     version: 0.11.0
   akash-faucet:
   - apiVersion: v2
+    appVersion: 0.0.11
+    created: "2022-11-28T19:28:29.213562216Z"
+    description: A faucet to give away free coins when using your own network (optional)
+    digest: 0992a9d5be1f332e245d874f810208ab0f231e552f8f2febba5fc99a46d27762
+    name: akash-faucet
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/akash-faucet-0.6.0/akash-faucet-0.6.0.tgz
+    version: 0.6.0
+  - apiVersion: v2
     appVersion: 1.16.0
     created: "2022-09-22T04:29:38.139873713Z"
     description: A Helm chart for Kubernetes
@@ -42,6 +66,16 @@ entries:
     version: 0.4.0
   akash-hostname-operator:
   - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2022-11-28T19:28:29.405226672Z"
+    description: An operator to map Ingress objects to Akash deployments (required)
+    digest: 15a0a438ee8871d85f32cbd7f4d5f354d02c77572e405585e122a90212c8d2ac
+    name: akash-hostname-operator
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/akash-hostname-operator-4.0.0/akash-hostname-operator-4.0.0.tgz
+    version: 4.0.0
+  - apiVersion: v2
     appVersion: 0.16.6
     created: "2022-09-22T04:29:38.400778137Z"
     description: A Helm chart for Kubernetes
@@ -52,6 +86,16 @@ entries:
     - https://github.com/88plug/akash-helm-charts/releases/download/akash-hostname-operator-0.29.0/akash-hostname-operator-0.29.0.tgz
     version: 0.29.0
   akash-ingress:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2022-11-28T19:28:29.577674903Z"
+    description: Installs the Akash Ingress resources (required)
+    digest: 78a9165aa907ec638706ada9f7049ecd74a522168ecbe65899df847b1c566236
+    name: akash-ingress
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/akash-ingress-1.0.0/akash-ingress-1.0.0.tgz
+    version: 1.0.0
   - apiVersion: v2
     appVersion: 1.0.0
     created: "2022-09-22T04:29:38.648828953Z"
@@ -225,6 +269,16 @@ entries:
   akash-inventory-operator:
   - apiVersion: v2
     appVersion: 0.1.4
+    created: "2022-11-28T19:28:29.733509324Z"
+    description: An operator required for persistent storage (optional)
+    digest: d794b3ffe35aa38ff46fcf91c0aae9dc843ea79446eddd04fb8a8564320c98f9
+    name: akash-inventory-operator
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/akash-inventory-operator-4.0.0/akash-inventory-operator-4.0.0.tgz
+    version: 4.0.0
+  - apiVersion: v2
+    appVersion: 0.1.4
     created: "2022-09-22T04:29:38.939551156Z"
     description: A Helm chart for the Akash Inventory Operator
     digest: 517f7045ffc79810ab7a9292c75104867fa27094bfeecb00ed26bb6d1ced5515
@@ -234,6 +288,16 @@ entries:
     - https://github.com/88plug/akash-helm-charts/releases/download/akash-inventory-operator-0.16.0/akash-inventory-operator-0.16.0.tgz
     version: 0.16.0
   akash-ip-operator:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2022-11-28T19:28:29.922712464Z"
+    description: An operator required for ip marketplace (optional)
+    digest: e702a077ce40f0a4fce2aa2e4cb3fd251725c5d7f218ec290c2b82a20cdb1816
+    name: akash-ip-operator
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/akash-ip-operator-4.0.3/akash-ip-operator-4.0.3.tgz
+    version: 4.0.3
   - apiVersion: v2
     appVersion: 0.16.4
     created: "2022-09-22T04:29:39.216918832Z"
@@ -260,6 +324,16 @@ entries:
     - https://github.com/88plug/akash-helm-charts/releases/download/akash-metallb-0.12.0/akash-metallb-0.12.0.tgz
     version: 0.12.0
   akash-node:
+  - apiVersion: v2
+    appVersion: 0.18.1
+    created: "2022-11-28T19:28:30.079367091Z"
+    description: Installs an Akash RPC node (required)
+    digest: 720ecf91a5585849a3b12ea87e17e42fd59f5498b507979970d9d7fb498c7332
+    name: akash-node
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/akash-node-4.0.5/akash-node-4.0.5.tgz
+    version: 4.0.5
   - apiVersion: v2
     appVersion: 0.16.6
     created: "2022-09-26T02:11:16.932397034Z"
@@ -1674,6 +1748,16 @@ entries:
     - https://github.com/ovrclk/helm-charts/releases/download/inventory-operator-0.1.0/inventory-operator-0.1.0.tgz
     version: 0.1.0
   provider:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2022-11-28T19:28:30.256368551Z"
+    description: Installs an Akash provider (required)
+    digest: c97af47cd5cc35ab9ecfdc282e283b02eab988cb4f938d91a16c0f58fc8f0c98
+    name: provider
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/provider-4.0.5/provider-4.0.5.tgz
+    version: 4.0.5
   - apiVersion: v2
     appVersion: 0.16.6
     created: "2022-09-22T04:29:39.96997493Z"
