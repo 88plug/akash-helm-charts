@@ -66,6 +66,16 @@ entries:
     version: 0.4.0
   akash-hostname-operator:
   - apiVersion: v2
+    appVersion: 0.2.1
+    created: "2023-05-15T18:34:03.726048885Z"
+    description: An operator to map Ingress objects to Akash deployments (required)
+    digest: 81319ba254fb0bc910c6f4f9f755e0c8e3bc3dc0b7ae03e4e6ca222ecad3b4bd
+    name: akash-hostname-operator
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/akash-hostname-operator-4.1.0/akash-hostname-operator-4.1.0.tgz
+    version: 4.1.0
+  - apiVersion: v2
     appVersion: 0.1.0
     created: "2022-11-28T19:28:29.405226672Z"
     description: An operator to map Ingress objects to Akash deployments (required)
@@ -268,6 +278,16 @@ entries:
     version: 0.1.0
   akash-inventory-operator:
   - apiVersion: v2
+    appVersion: 0.2.1
+    created: "2023-05-15T18:34:03.901306448Z"
+    description: An operator required for persistent storage (optional)
+    digest: a8f9bd7355b358091e90eab8717215630655f3f0c5edc35c69b6e4a55d61053a
+    name: akash-inventory-operator
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/akash-inventory-operator-4.1.0/akash-inventory-operator-4.1.0.tgz
+    version: 4.1.0
+  - apiVersion: v2
     appVersion: 0.1.4
     created: "2022-11-28T19:28:29.733509324Z"
     description: An operator required for persistent storage (optional)
@@ -288,6 +308,16 @@ entries:
     - https://github.com/88plug/akash-helm-charts/releases/download/akash-inventory-operator-0.16.0/akash-inventory-operator-0.16.0.tgz
     version: 0.16.0
   akash-ip-operator:
+  - apiVersion: v2
+    appVersion: 0.2.1
+    created: "2023-05-15T18:34:04.062260729Z"
+    description: An operator required for ip marketplace (optional)
+    digest: a2f2fd12c2cad76c48bbcf5d48b9c0288c4de0aa6014fb54a7c43e544df624ea
+    name: akash-ip-operator
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/akash-ip-operator-4.1.0/akash-ip-operator-4.1.0.tgz
+    version: 4.1.0
   - apiVersion: v2
     appVersion: 0.1.0
     created: "2022-11-28T19:28:29.922712464Z"
@@ -312,7 +342,8 @@ entries:
   - apiVersion: v2
     appVersion: 0.16.4
     created: "2022-09-22T04:29:39.472997265Z"
-    description: A network load-balancer implementation for Kubernetes using standard routing protocols
+    description: A network load-balancer implementation for Kubernetes using standard
+      routing protocols
     digest: bde0a29ea9e4100f67222089d1db380b9003a0314070020bcfdfa20535b7f2d3
     home: https://metallb.universe.tf
     icon: https://metallb.universe.tf/images/logo/metallb-white.png
@@ -324,6 +355,16 @@ entries:
     - https://github.com/88plug/akash-helm-charts/releases/download/akash-metallb-0.12.0/akash-metallb-0.12.0.tgz
     version: 0.12.0
   akash-node:
+  - apiVersion: v2
+    appVersion: 0.22.0
+    created: "2023-05-15T18:34:04.269348021Z"
+    description: Installs an Akash RPC node (required)
+    digest: 368b3339666baf8452a2831f075d4ad3108acbbf002b049402738a4a47a0fe5f
+    name: akash-node
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/akash-node-5.3.2/akash-node-5.3.2.tgz
+    version: 5.3.2
   - apiVersion: v2
     appVersion: 0.18.1
     created: "2022-11-28T19:28:30.079367091Z"
@@ -1749,6 +1790,16 @@ entries:
     version: 0.1.0
   provider:
   - apiVersion: v2
+    appVersion: 0.2.1
+    created: "2023-05-15T18:34:04.434620786Z"
+    description: Installs an Akash provider (required)
+    digest: 793829f0fd9c737033ecee6bce6e010fe1cc006be9b67d3fa9e03f35c5a73493
+    name: provider
+    type: application
+    urls:
+    - https://github.com/88plug/akash-helm-charts/releases/download/provider-4.2.6/provider-4.2.6.tgz
+    version: 4.2.6
+  - apiVersion: v2
     appVersion: 0.1.0
     created: "2022-11-28T19:28:30.256368551Z"
     description: Installs an Akash provider (required)
@@ -3078,4 +3129,4 @@ entries:
     urls:
     - https://github.com/ovrclk/helm-charts/releases/download/provider-0.1.0/provider-0.1.0.tgz
     version: 0.1.0
-generated: "2021-09-14T14:22:02.348140821Z"
+generated: "2023-05-15T18:34:04.435499704Z"
