@@ -10,6 +10,7 @@ from:
 key:
 keysecret:
 chainid: akashnet-2
+mode: block
 domain:
 home: "/root/.akash"
 node: "http://akash.c29r3.xyz:80/rpc"
