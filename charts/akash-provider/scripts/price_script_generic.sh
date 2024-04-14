@@ -2,7 +2,7 @@
 # WARNING: the runtime of this script should NOT exceed 5 seconds! (Perhaps can be amended via AKASH_BID_PRICE_SCRIPT_PROCESS_TIMEOUT env variable)
 # Requirements:
 # curl jq bc mawk ca-certificates
-# Version: Sept-19-2023
+# Version: April-03-2024
 set -o pipefail
 
 # Example:
@@ -148,7 +148,8 @@ done
 # Or use the highest price from PRICE_TARGET_GPU_MAPPINGS when model detection fails (ref. https://github.com/akash-network/support/issues/139 )
 gpu_unit_max_price=100
 for value in "${gpu_mappings[@]}"; do
-  if (( value > gpu_unit_max_price )); then
+  # Hint: bc <<< "$a > $b" (if a is greater than b, it will return 1, otherwise 0)
+  if bc <<< "$value > $gpu_unit_max_price" | grep -qw 1; then
     gpu_unit_max_price=$value
   fi
 done
@@ -159,17 +160,47 @@ fi
 
 gpu_price_total=0
 while IFS= read -r resource; do
-  model=$(echo "$resource" | jq -r '.gpu.attributes.vendor.nvidia.model // 0')
+  count=$(echo "$resource" | jq -r '.count')
+  model=$(echo "$resource" | jq -r '.gpu.attributes.vendor | (.nvidia // .amd // empty).model // 0')
+  vram=$(echo "$resource" | jq -r --arg v_model "$model" '.gpu.attributes.vendor | (
+      .nvidia | select(.model == $v_model) //
+      .amd | select(.model == $v_model) //
+      empty
+  ).ram // 0')
+  interface=$(echo "$resource" | jq -r --arg v_model "$model" '.gpu.attributes.vendor | (
+      .nvidia | select(.model == $v_model) //
+      .amd | select(.model == $v_model) //
+      empty
+  ).interface // 0')
   gpu_units=$(echo "$resource" | jq -r '.gpu.units // 0')
   # default to 100 USD/GPU per unit a month when PRICE_TARGET_GPU_MAPPINGS is not set
-  price="${gpu_mappings[''$model'']:-$gpu_unit_max_price}"
-  ((gpu_price_total += gpu_units * price))
+  # GPU <vram> price_target_gpu_mappings can specify <model.vram> or <model>. E.g. a100.40Gi=900,a100.80Gi=1000 or a100=950
+  if [[ "$vram" != "0" ]]; then
+    model="${model}.${vram}"
+  fi
+  # GPU <interface>: price_target_gpu_mappings can specify <model.vram.interface> or <model.interface>. E.g. a100.80Gi.pcie=900,a100.pcie=1000 or a100.80Gi.sxm4,a100.sxm4 or a100=950
+  if [[ "$interface" != "0" ]]; then
+    model="${model}.${interface}"
+  fi
+
+  # Fallback logic to find the best matching price if vram/interface weren't set in PRICE_TARGET_GPU_MAPPINGS
+  if [[ -n "${gpu_mappings["$model"]}" ]]; then
+    price="${gpu_mappings["$model"]}"
+  elif [[ -n "${gpu_mappings["${model%.*}"]}" ]]; then  # Remove the interface or vram if it's not found
+    price="${gpu_mappings["${model%.*}"]}"
+  elif [[ -n "${gpu_mappings["${model%%.*}"]}" ]]; then  # Remove vram (and interface if exists)
+    price="${gpu_mappings["${model%%.*}"]}"
+  else
+    price="$gpu_unit_max_price"  # Default catchall price
+  fi
+  gpu_price_total=$(bc -l <<< "$gpu_price_total + ($count * $gpu_units * $price)")
 
   if ! [[ -z $DEBUG_BID_SCRIPT ]]; then
     echo "DEBUG: model $model"
     echo "DEBUG: price for this model $price"
     echo "DEBUG: gpu_units $gpu_units"
     echo "DEBUG: gpu_price_total $gpu_price_total"
+    echo "DEBUG: count $count"
   fi
 done <<< "$(echo "$data_in" | jq -rc '.[]')"
 
